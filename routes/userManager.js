@@ -1,6 +1,22 @@
 const usermodel = require('../models/userModel');
 const express = require('express');
 const router = express.Router()
+const multer = require('multer')
+
+const imagestorage = multer.diskStorage({
+    destination : (req, file, cb) => {
+        cb(null, './uploads')
+    },
+    filename : (req, file, cb) => {
+        cb(null, file.originalname)
+    }
+})
+
+const imageUploader = multer({storage : imagestorage})
+
+router.post('/addimg', imageUploader.single('image'), (req, res) => {
+    res.status(200).json({message : 'image upload success'})
+})
 
 router.post('/add', (req, res) => {
 
@@ -79,17 +95,17 @@ router.put('/update/:id', (req, res) => {
 })
 
 router.delete('/delete/:id', (req, res) => {
+    id = req.params.id;
 
-    let id = req.params.id;
     usermodel.findByIdAndDelete(id)
-        .then((data) => {
-            console.log('data successfully fetched!!');
-            res.status(200).json(data);
-        })
-        .catch((err) => {
-            console.error(err);
-            res.status(500).json(err);
-        })
+    .then((data) => {
+        console.log('data successfully deleted!!');
+        res.status(200).json(data);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).json(err);
+    })
 })
 
 
