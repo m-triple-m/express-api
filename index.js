@@ -5,6 +5,20 @@ const userRouter = require('./routes/userManager');
 const parser = require('body-parser');
 const cors = require('cors')
 
+const http = require('http').createServer(app);
+const io = require('socket.io')(http)
+
+io.on('connection', (socket) => {
+    console.log('a user connected!!');
+
+    socket.on('get_that', (data) => {
+        console.log('data recieved!!');
+        console.log(data);
+
+        socket.broadcast.emit('rec_that', data);
+    })
+})
+
 app.use(cors());
 app.use(parser.json());
 app.use('/user', userRouter);
@@ -22,7 +36,7 @@ app.get('/home', (req, res) => {
     res.send('Welcome home!!');
 })
 
-app.listen(port, () => {
+http.listen(port, () => {
     console.log('server started...');
 })
 
