@@ -2,6 +2,7 @@ const express = require('express');
 const port = 3000;
 const app = express();
 const userRouter = require('./routes/userManager');
+const utilRouter = require('./routes/util')
 const parser = require('body-parser');
 const cors = require('cors')
 
@@ -22,6 +23,7 @@ io.on('connection', (socket) => {
 app.use(cors());
 app.use(parser.json());
 app.use('/user', userRouter);
+app.use('/util', utilRouter);
 
 app.get('/add', (req, res) => {
     console.log('a get request');
